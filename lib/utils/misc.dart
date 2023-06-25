@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:giveback/main.dart';
 
 class SubmitButton extends StatelessWidget {
   final String labelText;
@@ -58,5 +59,20 @@ Future push(BuildContext context, Widget page) {
   return Navigator.push(
     context,
     MaterialPageRoute(builder: (context) => page),
+  );
+}
+
+void pushMessage(String message, {int duration = 1}) {
+  // Check if the scaffold messenger is mounted
+  if (scaffoldMessengerKey.currentState?.mounted ?? false) {
+    scaffoldMessengerKey.currentState?.hideCurrentSnackBar();
+  }
+
+  scaffoldMessengerKey.currentState?.showSnackBar(
+    SnackBar(
+      content: Text(message),
+      duration: Duration(seconds: duration),
+      behavior: SnackBarBehavior.floating,
+    ),
   );
 }
