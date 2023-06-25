@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1020927149342",
+    "project_id": "giveback-9ebf6",
+    "storage_bucket": "giveback-9ebf6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1020927149342:android:e6385e3157e5499ec2750f",
+        "android_client_info": {
+          "package_name": "com.amlxv.giveback.giveback"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1020927149342-dtpbt2q4gk24c6b1rfnlf89okvk40l47.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBz1wuiz-v5sSHf6Y5KpwFhgqje_rLtbhg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1020927149342-dtpbt2q4gk24c6b1rfnlf89okvk40l47.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
