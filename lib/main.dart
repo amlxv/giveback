@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:giveback/pages/auth/register.dart';
+import 'package:giveback/pages/auth/login.dart';
 import 'package:giveback/utils/menu.dart';
 import 'package:giveback/utils/nav_bar.dart';
 import 'package:giveback/utils/theme.dart';
@@ -28,7 +28,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: !logged
-          ? const Register()
+          ? const Login()
           : IndexedStack(index: index, children: screens),
       bottomNavigationBar:
           logged ? NavBar(index: index, updateIndex: updateIndex) : null,
