@@ -38,6 +38,7 @@ dependencies:
 
   google_fonts: ^4.0.5
   transparent_image: ^2.0.1
+  firebase_core: ^2.14.0
 
 dev_dependencies:
   flutter_test:
