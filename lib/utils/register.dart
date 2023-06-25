@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:giveback/pages/auth/register.dart';
+import 'package:giveback/pages/auth/login.dart';
 import 'package:giveback/utils/misc.dart';
 
 class RegisterLayout extends StatelessWidget {
@@ -120,7 +120,7 @@ class RegisterForm extends StatelessWidget {
         SubmitButton(
             labelText: 'Register',
             onPressed: () {
-              print('Login button pressed');
+              print('Register button pressed');
             }),
         const SizedBox(height: 5),
         Row(
@@ -129,7 +129,7 @@ class RegisterForm extends StatelessWidget {
             const Text('Already have an account?'),
             TextButton(
               onPressed: () {
-                push(context, const Register());
+                push(context, const Login());
               },
               child: const Text('Login'),
             ),
