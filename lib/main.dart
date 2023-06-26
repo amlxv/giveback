@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:giveback/firebase_options.dart';
 import 'package:giveback/pages/auth/login.dart';
 import 'package:giveback/utils/menu.dart';
-import 'package:giveback/utils/nav_bar.dart';
+import 'package:giveback/utils/navbar.dart';
 import 'package:giveback/utils/theme.dart';
 
 final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
@@ -32,7 +32,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  int index = 3;
+  int index = 1;
   bool logged = false;
 
   @override

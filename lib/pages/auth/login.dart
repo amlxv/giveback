@@ -18,7 +18,7 @@ class _LoginState extends State<Login> {
           children: [
             const SizedBox(height: 30),
             Image.asset(
-              'images/undraw_welcoming.png',
+              'images/undraw/welcoming.png',
               width: MediaQuery.of(context).size.width * 0.8,
               fit: BoxFit.cover,
             ),
