@@ -32,13 +32,20 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  int index = 0;
+  int index = 3;
   bool logged = false;
 
   @override
   void initState() {
     super.initState();
+    handleAuth();
+  }
 
+  void updateIndex(int index) {
+    setState(() => this.index = index);
+  }
+
+  void handleAuth() {
     FirebaseAuth.instance.authStateChanges().listen((User? user) {
       if (user == null) {
         setState(() => logged = false);
@@ -48,8 +55,10 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-  void updateIndex(int index) {
-    setState(() => this.index = index);
+  @override
+  void dispose() {
+    super.dispose();
+    handleAuth;
   }
 
   @override

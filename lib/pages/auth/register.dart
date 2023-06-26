@@ -20,18 +20,18 @@ class _RegisterState extends State<Register> {
               clipBehavior: Clip.none,
               children: [
                 Positioned(
-                  top: -100,
+                  top: -50,
                   right: 0,
                   bottom: 0,
                   left: 0,
                   child: Image.asset(
-                    'images/illustration.png',
+                    'images/illustrations/register.png',
                     width: MediaQuery.of(context).size.width,
                     fit: BoxFit.cover,
                   ),
                 ),
                 Image.asset(
-                  'images/illustration.png',
+                  'images/illustrations/register.png',
                   width: MediaQuery.of(context).size.width,
                   fit: BoxFit.cover,
                 ),

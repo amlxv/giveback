@@ -13,6 +13,8 @@ class RegisterForm extends StatefulWidget {
 }
 
 class _RegisterFormState extends State<RegisterForm> {
+  bool isLoading = false;
+
   final TextEditingController nameController =
       TextEditingController(text: 'user');
   final TextEditingController emailController =
@@ -35,19 +37,27 @@ class _RegisterFormState extends State<RegisterForm> {
   }
 
   void handleCreateUser() async {
-    if (!handleFormValidation()) return;
+    if (mounted) setState(() => isLoading = true);
+
+    if (!handleFormValidation()) {
+      if (mounted) setState(() => isLoading = false);
+      return;
+    }
 
     UserCredential? credential = await createUserWithEmailAndPassword();
 
     if (credential != null) {
       await credential.user!.updateDisplayName(nameController.text);
+      if (mounted) setState(() => isLoading = false);
       pushMessage('Welcome, ${nameController.text}!', duration: 3);
       _next();
     }
+
+    if (mounted) setState(() => isLoading = false);
   }
 
   _next() {
-    push(context, const MyApp());
+    if (mounted) push(context, const MyApp());
   }
 
   bool handleFormValidation() {
@@ -94,11 +104,9 @@ class _RegisterFormState extends State<RegisterForm> {
             controller: confirmPasswordController,
             obscureText: true),
         const SizedBox(height: 30),
-        SubmitButton(
-            labelText: 'Register',
-            onPressed: () {
-              handleCreateUser();
-            }),
+        isLoading
+            ? const CircularProgressIndicator()
+            : SubmitButton(labelText: 'Register', onPressed: handleCreateUser),
         const SizedBox(height: 5),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,

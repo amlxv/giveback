@@ -16,14 +16,23 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
+    handleAuth();
+  }
 
+  handleAuth() {
     FirebaseAuth.instance.authStateChanges().listen((User? user) {
       if (user == null) {
-        push(context, const MyApp());
+        if (mounted) push(context, const MyApp());
       } else {
-        setState(() => this.user = user);
+        if (mounted) setState(() => this.user = user);
       }
     });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    handleAuth();
   }
 
   @override

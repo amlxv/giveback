@@ -13,6 +13,8 @@ class LoginForm extends StatefulWidget {
 }
 
 class _LoginFormState extends State<LoginForm> {
+  bool isLoading = false;
+
   TextEditingController emailController =
       TextEditingController(text: "amirulfcso@gmail.com");
   TextEditingController passwordController =
@@ -31,11 +33,17 @@ class _LoginFormState extends State<LoginForm> {
   }
 
   void handleSignIn() async {
-    if (!handleFormValidation()) return;
+    if (mounted) setState(() => isLoading = true);
+
+    if (!handleFormValidation()) {
+      if (mounted) setState(() => isLoading = false);
+      return;
+    }
 
     UserCredential? userCredential = await signInWithEmailAndPassword();
 
     if (userCredential != null) {
+      if (mounted) setState(() => isLoading = false);
       pushMessage('Welcome, ${userCredential.user!.displayName}!', duration: 3);
     }
 
@@ -43,7 +51,7 @@ class _LoginFormState extends State<LoginForm> {
   }
 
   _next() {
-    push(context, const MyApp());
+    if (mounted) push(context, const MyApp());
   }
 
   bool handleFormValidation() {
@@ -74,12 +82,12 @@ class _LoginFormState extends State<LoginForm> {
           controller: passwordController,
         ),
         const SizedBox(height: 30),
-        SubmitButton(
-          labelText: 'Login',
-          onPressed: () {
-            handleSignIn();
-          },
-        ),
+        isLoading
+            ? const CircularProgressIndicator()
+            : SubmitButton(
+                labelText: 'Login',
+                onPressed: handleSignIn,
+              ),
         const SizedBox(height: 5),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
