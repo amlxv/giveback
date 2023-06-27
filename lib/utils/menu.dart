@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:giveback/pages/donation.dart';
+import 'package:giveback/pages/charities.dart';
 import 'package:giveback/pages/home.dart';
 import 'package:giveback/pages/mylist.dart';
 import 'package:giveback/pages/profile.dart';
@@ -12,7 +12,7 @@ class MenuItem {
 
 const List<Widget> screens = <Widget>[
   Home(),
-  Donation(),
+  Charities(),
   MyList(),
   Profile(),
 ];

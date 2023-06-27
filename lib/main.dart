@@ -32,7 +32,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  int index = 1;
+  int index = 2;
   bool logged = false;
 
   @override

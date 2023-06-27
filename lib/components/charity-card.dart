@@ -33,17 +33,27 @@ class CharityCard extends StatelessWidget {
             ),
             subtitle: RichText(
               text: TextSpan(
-                text: 'By, ',
+                text: (data['amount']) != null ? 'RM ' : 'By, ',
                 style: const TextStyle(
                   color: Colors.black54,
                 ),
                 children: [
-                  TextSpan(
-                    text: '${data['by']}',
-                    style: const TextStyle(
-                      color: Colors.black54,
-                      fontWeight: FontWeight.w900,
+                  const WidgetSpan(
+                    alignment: PlaceholderAlignment.baseline,
+                    baseline: TextBaseline.alphabetic,
+                    child: SizedBox(
+                      height: 15,
                     ),
+                  ),
+                  TextSpan(
+                    text:
+                        '${(data['amount']) != null ? data['amount'] : data['by']}',
+                    style: (data['amount']) != null
+                        ? null
+                        : const TextStyle(
+                            color: Colors.black54,
+                            fontWeight: FontWeight.w900,
+                          ),
                   ),
                 ],
               ),
