@@ -1,6 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:giveback/main.dart';
 import 'package:giveback/utils/misc.dart';
+import 'package:giveback/utils/validation.dart';
 import 'package:shimmer/shimmer.dart';
 
 class SingleCharity extends StatefulWidget {
@@ -13,6 +17,54 @@ class SingleCharity extends StatefulWidget {
 
 class _SingleCharityState extends State<SingleCharity> {
   String defaultImage = 'https://source.unsplash.com/random/?charity';
+  String buttonText = "Donate";
+  TextEditingController? amountController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  Future handleDonation() async {
+    final auth = FirebaseAuth.instance;
+    final db = FirebaseFirestore.instance;
+    final uid = auth.currentUser!.uid;
+    final amount = int.parse(amountController!.text);
+    final charityId = widget.data['id'];
+
+    await db.collection('donations').add({
+      'amount': amount,
+      'charity_id': charityId,
+      'user_id': uid,
+    }).then((value) {
+      db.collection('charities').doc(charityId).update({
+        'current': widget.data['current'] + amount,
+      }).then((value) {
+        setState(() {
+          buttonText = "Donate";
+        });
+        push(context, const MyApp(currentIndex: 2));
+      }).catchError((error) {
+        pushMessage(error.toString());
+      });
+    }).catchError((error) {
+      pushMessage(error.toString());
+    });
+  }
+
+  handleButtonClick() async {
+    if (buttonText == "Donate") {
+      setState(() {
+        buttonText = "Pay";
+      });
+    } else {
+      validateInput("Amount", amountController!);
+
+      if (amountController!.text.isNotEmpty) {
+        await handleDonation();
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -140,19 +192,55 @@ class _SingleCharityState extends State<SingleCharity> {
                     ),
                   ),
                   const SizedBox(height: 30),
-                  const Text(
-                    'About',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w900,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    '${widget.data['desc']}',
-                    style: const TextStyle(
-                      color: Colors.black54,
-                    ),
-                  ),
+                  (buttonText == "Donate")
+                      ? Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'About',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w900,
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            Text(
+                              '${widget.data['desc']}',
+                              style: const TextStyle(
+                                color: Colors.black54,
+                              ),
+                            ),
+                          ],
+                        )
+                      : Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Amount',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w900,
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            TextField(
+                              controller: amountController,
+                              decoration: InputDecoration(
+                                prefixIcon: const Icon(Icons.attach_money),
+                                hintText: "100",
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            const Text(
+                              "All donations are in Ringgit Malaysia (RM).",
+                              style: TextStyle(
+                                color: Colors.black54,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
+                        ),
                 ],
               ),
             ),
@@ -164,10 +252,8 @@ class _SingleCharityState extends State<SingleCharity> {
         child: ClipRRect(
           borderRadius: BorderRadius.circular(20),
           child: SubmitButton(
-            labelText: "Donate",
-            onPressed: () {
-              print("Donate button pressed");
-            },
+            labelText: buttonText,
+            onPressed: handleButtonClick,
             height: 70,
           ),
         ),

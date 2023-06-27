@@ -33,6 +33,7 @@ class InputField extends StatelessWidget {
   final bool obscureText;
   final String labelText;
   final IconData icon;
+  final bool readOnly;
   final TextEditingController controller;
 
   const InputField({
@@ -41,11 +42,13 @@ class InputField extends StatelessWidget {
     required this.labelText,
     required this.icon,
     required this.controller,
+    this.readOnly = false,
   });
 
   @override
   Widget build(BuildContext context) {
     return TextField(
+      readOnly: readOnly,
       controller: controller,
       obscureText: obscureText,
       decoration: InputDecoration(

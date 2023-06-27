@@ -117,6 +117,7 @@ class _ProfileFormState extends State<ProfileForm> {
           height: 20,
         ),
         InputField(
+          readOnly: true,
           labelText: 'Email',
           controller: emailController,
           icon: Icons.email_rounded,
