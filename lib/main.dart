@@ -25,19 +25,23 @@ void main() async {
 }
 
 class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+  final int? currentIndex;
+  const MyApp({super.key, this.currentIndex});
 
   @override
   State<MyApp> createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
-  int index = 2;
+  int index = 0;
   bool logged = false;
 
   @override
   void initState() {
     super.initState();
+    if (widget.currentIndex != null) {
+      setState(() => index = widget.currentIndex!);
+    }
     handleAuth();
   }
 
@@ -66,7 +70,8 @@ class _MyAppState extends State<MyApp> {
     return Scaffold(
       body: !logged
           ? const Login()
-          : IndexedStack(index: index, children: screens),
+          : IndexedStack(
+              index: index, children: getScreens(updateIndex) as List<Widget>),
       bottomNavigationBar:
           logged ? NavBar(index: index, updateIndex: updateIndex) : null,
     );

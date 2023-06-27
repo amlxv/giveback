@@ -10,12 +10,14 @@ class MenuItem {
   final String title;
 }
 
-const List<Widget> screens = <Widget>[
-  Home(),
-  Charities(),
-  MyList(),
-  Profile(),
-];
+List getScreens(Function? updateIndex) {
+  return <Widget>[
+    Home(updateIndex: updateIndex),
+    const Charities(),
+    MyList(updateIndex: updateIndex),
+    const Profile(),
+  ];
+}
 
 const menuItemList = <MenuItem>[
   MenuItem(iconData: Icons.home, title: 'Home'),

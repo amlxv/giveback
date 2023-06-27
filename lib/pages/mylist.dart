@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:giveback/components/charity-card.dart';
 
 class MyList extends StatefulWidget {
-  const MyList({super.key});
+  final Function? updateIndex;
+  const MyList({super.key, this.updateIndex});
 
   @override
   State<MyList> createState() => _MyListState();
@@ -127,8 +128,9 @@ class _MyListState extends State<MyList> {
                             physics: const NeverScrollableScrollPhysics(),
                             shrinkWrap: true,
                             itemCount: snapshot.data!.length,
-                            itemBuilder: (context, index) =>
-                                CharityCard(data: snapshot.data?[index]),
+                            itemBuilder: (context, index) => CharityCard(
+                                data: snapshot.data?[index],
+                                from: 'mylist$index'),
                           ),
                           const SizedBox(height: 20),
                         ],
@@ -136,13 +138,35 @@ class _MyListState extends State<MyList> {
                     } else if (snapshot.hasData && snapshot.data!.isEmpty) {
                       return Container(
                         margin: const EdgeInsets.only(top: 50),
-                        child: const Center(
-                          child: Text(
-                            "You haven't donated yet.",
-                            style: TextStyle(
-                              color: Colors.black54,
-                              fontWeight: FontWeight.w300,
-                            ),
+                        child: Center(
+                          child: Column(
+                            children: [
+                              const Text(
+                                "You haven't donated yet.",
+                                style: TextStyle(
+                                  color: Colors.black54,
+                                  fontWeight: FontWeight.w300,
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+                              TextButton(
+                                onPressed: () {
+                                  widget.updateIndex!(1);
+                                },
+                                style: TextButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 20,
+                                    vertical: 10,
+                                  ),
+                                ),
+                                child: const Text(
+                                  'Donate Now',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w300,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       );

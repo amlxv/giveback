@@ -18,6 +18,7 @@ class _NavBarState extends State<NavBar> {
       type: BottomNavigationBarType.fixed,
       currentIndex: widget.index,
       onTap: (int index) => widget.updateIndex(index),
+      // onTap: (int index) => push(context, MyApp(currentIndex: index)),
       elevation: 16.0,
       items: menuItemList
           .map((m) =>

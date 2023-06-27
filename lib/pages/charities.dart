@@ -102,8 +102,8 @@ class _CharitiesState extends State<Charities> {
                             physics: const NeverScrollableScrollPhysics(),
                             shrinkWrap: true,
                             itemCount: snapshot.data!.length,
-                            itemBuilder: (context, index) =>
-                                CharityCard(data: snapshot.data[index]),
+                            itemBuilder: (context, index) => CharityCard(
+                                data: snapshot.data[index], from: 'charities'),
                           ),
                           const SizedBox(height: 20),
                         ],
