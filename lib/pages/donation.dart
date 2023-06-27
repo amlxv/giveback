@@ -114,7 +114,7 @@ class _DonationState extends State<Donation> {
                             shrinkWrap: true,
                             itemCount: snapshot.data!.length,
                             itemBuilder: (context, index) =>
-                                CharityCard(index: index, snapshot: snapshot),
+                                CharityCard(data: snapshot.data[index]),
                           ),
                           const SizedBox(height: 20),
                         ],

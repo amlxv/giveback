@@ -5,10 +5,13 @@ class SubmitButton extends StatelessWidget {
   final String labelText;
   final VoidCallback onPressed;
 
+  final double height;
+
   const SubmitButton({
     super.key,
     required this.labelText,
     required this.onPressed,
+    this.height = 60,
   });
 
   @override
@@ -16,7 +19,7 @@ class SubmitButton extends StatelessWidget {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-        minimumSize: const Size(double.infinity, 60),
+        minimumSize: Size(double.infinity, height),
       ),
       child: Text(
         labelText,

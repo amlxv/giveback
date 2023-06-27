@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:giveback/pages/single-charity.dart';
+import 'package:giveback/utils/misc.dart';
+import 'package:shimmer/shimmer.dart';
 
 class CharityCard extends StatelessWidget {
-  final AsyncSnapshot snapshot;
-  final int index;
+  final dynamic data;
   final String defaultImage =
       'https://source.unsplash.com/random/?charity${DateTime.now().toString()}';
 
-  CharityCard({
-    super.key,
-    required this.index,
-    required this.snapshot,
-  });
+  CharityCard({super.key, required this.data});
 
   @override
   Widget build(BuildContext context) {
@@ -25,13 +23,13 @@ class CharityCard extends StatelessWidget {
       elevation: 0.3,
       child: InkWell(
         onTap: () {
-          print("Item ${snapshot.data![index]['id']} clicked");
+          push(context, SingleCharity(data: data));
         },
         child: Padding(
           padding: const EdgeInsets.all(10),
           child: ListTile(
             title: Text(
-              '${snapshot.data![index]['title']}',
+              '${data['title']}',
             ),
             subtitle: RichText(
               text: TextSpan(
@@ -41,7 +39,7 @@ class CharityCard extends StatelessWidget {
                 ),
                 children: [
                   TextSpan(
-                    text: '${snapshot.data![index]['by']}',
+                    text: '${data['by']}',
                     style: const TextStyle(
                       color: Colors.black54,
                       fontWeight: FontWeight.w900,
@@ -54,10 +52,33 @@ class CharityCard extends StatelessWidget {
             ),
             leading: ClipRRect(
               borderRadius: BorderRadius.circular(10),
-              child: Image.network(
-                '${snapshot.data![index]['image'] ?? defaultImage}',
-                width: 80,
-                fit: BoxFit.cover,
+              child: FutureBuilder(
+                future: Future.delayed(
+                  const Duration(seconds: 2),
+                  () => true,
+                ),
+                builder: (context, builder) {
+                  if (builder.hasData) {
+                    return Image.network(
+                      '${data['image'] ?? defaultImage}',
+                      width: 80,
+                      fit: BoxFit.cover,
+                    );
+                  }
+                  return SizedBox(
+                    width: 80,
+                    height: 80,
+                    child: Shimmer.fromColors(
+                      baseColor: Colors.grey.shade300,
+                      highlightColor: Colors.grey.shade100,
+                      child: Container(
+                        height: 20,
+                        width: 100,
+                        color: Colors.white,
+                      ),
+                    ),
+                  );
+                },
               ),
             ),
           ),
