@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:giveback/pages/single-charity.dart';
 import 'package:giveback/utils/misc.dart';
@@ -5,10 +6,9 @@ import 'package:shimmer/shimmer.dart';
 
 class CharityCard extends StatelessWidget {
   final dynamic data;
-  final String defaultImage =
-      'https://source.unsplash.com/random/?charity${DateTime.now().toString()}';
+  final String defaultImage = 'https://source.unsplash.com/random/?charity';
 
-  CharityCard({super.key, required this.data});
+  const CharityCard({super.key, required this.data});
 
   @override
   Widget build(BuildContext context) {
@@ -52,22 +52,15 @@ class CharityCard extends StatelessWidget {
             ),
             leading: ClipRRect(
               borderRadius: BorderRadius.circular(10),
-              child: FutureBuilder(
-                future: Future.delayed(
-                  const Duration(seconds: 2),
-                  () => true,
-                ),
-                builder: (context, builder) {
-                  if (builder.hasData) {
-                    return Image.network(
-                      '${data['image'] ?? defaultImage}',
-                      width: 80,
-                      fit: BoxFit.cover,
-                    );
-                  }
-                  return SizedBox(
+              child: Hero(
+                tag: data['id'],
+                child: CachedNetworkImage(
+                  imageUrl: data['image'] ?? "$defaultImage-${data['id']}",
+                  width: 80,
+                  fit: BoxFit.cover,
+                  placeholder: (context, url) => SizedBox(
+                    height: double.infinity,
                     width: 80,
-                    height: 80,
                     child: Shimmer.fromColors(
                       baseColor: Colors.grey.shade300,
                       highlightColor: Colors.grey.shade100,
@@ -77,8 +70,9 @@ class CharityCard extends StatelessWidget {
                         color: Colors.white,
                       ),
                     ),
-                  );
-                },
+                  ),
+                  errorWidget: (context, url, error) => const Icon(Icons.error),
+                ),
               ),
             ),
           ),

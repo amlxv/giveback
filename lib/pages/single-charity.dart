@@ -1,5 +1,7 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:giveback/utils/misc.dart';
+import 'package:shimmer/shimmer.dart';
 
 class SingleCharity extends StatefulWidget {
   final dynamic data;
@@ -10,8 +12,7 @@ class SingleCharity extends StatefulWidget {
 }
 
 class _SingleCharityState extends State<SingleCharity> {
-  String defaultImage =
-      'https://source.unsplash.com/random/?charity${DateTime.now().toString()}';
+  String defaultImage = 'https://source.unsplash.com/random/?charity';
 
   @override
   Widget build(BuildContext context) {
@@ -34,11 +35,28 @@ class _SingleCharityState extends State<SingleCharity> {
             SizedBox(
               height: 300,
               width: double.infinity,
-              child: Image.network(
-                '${widget.data['image'] ?? defaultImage}',
-                width: double.infinity,
-                height: double.infinity,
-                fit: BoxFit.cover,
+              child: Hero(
+                tag: widget.data['id'],
+                child: CachedNetworkImage(
+                  imageUrl: widget.data['image'] ??
+                      "$defaultImage-${widget.data['id']}",
+                  width: 80,
+                  fit: BoxFit.cover,
+                  placeholder: (context, url) => SizedBox(
+                    height: double.infinity,
+                    width: 80,
+                    child: Shimmer.fromColors(
+                      baseColor: Colors.grey.shade300,
+                      highlightColor: Colors.grey.shade100,
+                      child: Container(
+                        height: 20,
+                        width: 100,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  errorWidget: (context, url, error) => const Icon(Icons.error),
+                ),
               ),
             ),
             Padding(

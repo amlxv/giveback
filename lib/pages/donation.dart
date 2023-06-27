@@ -20,6 +20,7 @@ class _DonationState extends State<Donation> {
         charities.add({...data, 'id': doc.id});
       }
     });
+    print(charities);
     return charities;
   }
 
