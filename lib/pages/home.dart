@@ -122,41 +122,54 @@ class _HomeState extends State<Home> {
                         alignment: Alignment.centerLeft,
                         children: [
                           Container(
-                            width: double.infinity,
-                            decoration: BoxDecoration(
-                              color: Colors.deepPurple.shade200,
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            padding: const EdgeInsets.only(
-                              right: 20,
-                              top: 10,
-                              bottom: 10,
-                              left: 60,
-                            ),
-                            child: RichText(
-                              text: const TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: 'RM 500',
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18,
-                                    ),
-                                  ),
-                                  WidgetSpan(
-                                    child: SizedBox(width: 5),
-                                  ),
-                                  TextSpan(
-                                    text: ' total donation',
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                ],
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                color: Colors.deepPurple.shade200,
+                                borderRadius: BorderRadius.circular(20),
                               ),
-                            ),
-                          ),
+                              padding: const EdgeInsets.only(
+                                right: 20,
+                                top: 10,
+                                bottom: 10,
+                                left: 60,
+                              ),
+                              child: StreamBuilder(
+                                stream: db
+                                    .collection('donations')
+                                    .where('user_id',
+                                        isEqualTo: auth.currentUser?.uid)
+                                    .snapshots(),
+                                builder: (context, snapshot) {
+                                  if (snapshot.hasData) {
+                                    return RichText(
+                                      text: TextSpan(
+                                        children: [
+                                          TextSpan(
+                                            text:
+                                                'RM ${snapshot.data!.docs.fold(0, (previousValue, element) => previousValue + element['amount'] as int).toStringAsFixed(2)}',
+                                            style: const TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 18,
+                                            ),
+                                          ),
+                                          const WidgetSpan(
+                                            child: SizedBox(width: 5),
+                                          ),
+                                          const TextSpan(
+                                            text: ' total donation',
+                                            style: TextStyle(
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  }
+                                  return const Center(
+                                      child: CircularProgressIndicator());
+                                },
+                              )),
                           CircleAvatar(
                             backgroundColor: Colors.deepPurple.shade200,
                             radius: 25,
