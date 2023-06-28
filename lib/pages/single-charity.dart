@@ -43,6 +43,7 @@ class _SingleCharityState extends State<SingleCharity> {
         setState(() {
           buttonText = "Donate";
         });
+        pushMessage("Thank you for your donation!");
         push(context, const MyApp(currentIndex: 2));
       }).catchError((error) {
         pushMessage(error.toString());

@@ -101,12 +101,26 @@ class _HomeState extends State<Home> {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                "Hi, ${FirebaseAuth.instance.currentUser?.displayName ?? ''}!",
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                              StreamBuilder(
+                                stream: auth.authStateChanges(),
+                                builder: (context, snapshot) {
+                                  if (snapshot.hasData) {
+                                    return Text(
+                                      "Hi, ${FirebaseAuth.instance.currentUser?.displayName ?? ''}!",
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    );
+                                  }
+                                  return const Text(
+                                    "Hi, there!",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  );
+                                },
                               ),
                               const SizedBox(height: 5),
                               const Text(
@@ -159,7 +173,7 @@ class _HomeState extends State<Home> {
                                           const TextSpan(
                                             text: ' total donation',
                                             style: TextStyle(
-                                              color: Colors.black,
+                                              color: Colors.black54,
                                             ),
                                           ),
                                         ],
@@ -196,20 +210,6 @@ class _HomeState extends State<Home> {
             padding: const EdgeInsets.all(20),
             child: Column(
               children: [
-                TextField(
-                  decoration: InputDecoration(
-                    hintText: 'Search for a charity',
-                    prefixIcon: const Icon(Icons.search),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    prefixIconConstraints: const BoxConstraints(
-                      minWidth: 60,
-                    ),
-                  ),
-                  onTapOutside: (focusNode) => FocusScope.of(context).unfocus(),
-                ),
-                const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
