@@ -15,14 +15,11 @@ class RegisterForm extends StatefulWidget {
 class _RegisterFormState extends State<RegisterForm> {
   bool isLoading = false;
 
-  final TextEditingController nameController =
-      TextEditingController(text: 'user');
-  final TextEditingController emailController =
-      TextEditingController(text: 'user@gmail.com');
-  final TextEditingController passwordController =
-      TextEditingController(text: 'password');
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController =
-      TextEditingController(text: 'password');
+      TextEditingController();
 
   Future<UserCredential?> createUserWithEmailAndPassword() async {
     try {
