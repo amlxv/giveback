@@ -15,10 +15,8 @@ class LoginForm extends StatefulWidget {
 class _LoginFormState extends State<LoginForm> {
   bool isLoading = false;
 
-  TextEditingController emailController =
-      TextEditingController(text: "amirulfcso@gmail.com");
-  TextEditingController passwordController =
-      TextEditingController(text: "password");
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
 
   Future<UserCredential?> signInWithEmailAndPassword() async {
     try {
