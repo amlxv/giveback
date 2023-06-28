@@ -6,7 +6,7 @@ import 'package:shimmer/shimmer.dart';
 
 class CharityCard extends StatelessWidget {
   final dynamic data;
-  final String defaultImage = 'https://source.unsplash.com/random/?charity';
+  final String defaultImage = 'https://picsum.photos/seed';
   final String from;
 
   const CharityCard({super.key, required this.data, required this.from});
@@ -66,7 +66,7 @@ class CharityCard extends StatelessWidget {
               child: Hero(
                 tag: from + data['id'],
                 child: CachedNetworkImage(
-                  imageUrl: data['image'] ?? "$defaultImage-${data['id']}",
+                  imageUrl: data['image'] ?? "$defaultImage/${data['id']}/500",
                   width: 80,
                   fit: BoxFit.cover,
                   placeholder: (context, url) => SizedBox(

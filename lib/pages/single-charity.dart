@@ -16,7 +16,7 @@ class SingleCharity extends StatefulWidget {
 }
 
 class _SingleCharityState extends State<SingleCharity> {
-  String defaultImage = 'https://source.unsplash.com/random/?charity';
+  String defaultImage = 'https://picsum.photos/seed';
   String buttonText = "Donate";
   TextEditingController? amountController = TextEditingController();
 
@@ -92,7 +92,7 @@ class _SingleCharityState extends State<SingleCharity> {
                 tag: widget.data['id'],
                 child: CachedNetworkImage(
                   imageUrl: widget.data['image'] ??
-                      "$defaultImage-${widget.data['id']}",
+                      "$defaultImage/${widget.data['id']}/500",
                   width: 80,
                   fit: BoxFit.cover,
                   placeholder: (context, url) => SizedBox(
