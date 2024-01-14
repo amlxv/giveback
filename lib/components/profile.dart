@@ -40,6 +40,7 @@ class _ProfileFormState extends State<ProfileForm> {
 
     db.collection('users').doc(auth.currentUser?.uid).get().then(
       (DocumentSnapshot documentSnapshot) {
+        if(documentSnapshot.data() == null) return;
         final userRef = documentSnapshot.data() as Map<String, dynamic>;
         phoneController.text = userRef['phone'] ?? '';
       },
