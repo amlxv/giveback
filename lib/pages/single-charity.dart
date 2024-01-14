@@ -36,6 +36,7 @@ class _SingleCharityState extends State<SingleCharity> {
       'amount': amount,
       'charity_id': charityId,
       'user_id': uid,
+      'timestamp': DateTime.now().millisecondsSinceEpoch,
     }).then((value) {
       db.collection('charities').doc(charityId).update({
         'current': widget.data['current'] + amount,

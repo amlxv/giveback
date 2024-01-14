@@ -34,18 +34,25 @@ class _MyListState extends State<MyList> {
     List donations = await getDonations();
     List charities = [];
 
-    for (var donation in donations) {
-      await db
-          .collection('charities')
-          .doc(donation['charity_id'])
-          .get()
-          .then((DocumentSnapshot snapshot) {
-        final Map<String, dynamic> data =
-            snapshot.data() as Map<String, dynamic>;
-        charities
-            .add({...data, 'id': snapshot.id, 'amount': donation['amount']});
-      }).catchError((error) => null);
-    }
+    await Future.wait(donations.map((donation) async {
+      try {
+        final snapshot =
+            await db.collection('charities').doc(donation['charity_id']).get();
+        final data = snapshot.data() as Map<String, dynamic>;
+
+        charities.add({
+          ...data,
+          'id': snapshot.id,
+          'amount': donation['amount'],
+          'timestamp': donation['timestamp']
+        });
+      } catch (error) {
+        debugPrint('Error fetching charity data: $error');
+      }
+    }));
+
+    // Sort by the latest donation.
+    charities.sort((a, b) => b["timestamp"].compareTo(a["timestamp"]));
     return charities;
   }
 
