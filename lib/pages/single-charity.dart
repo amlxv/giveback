@@ -89,7 +89,6 @@ class _SingleCharityState extends State<SingleCharity> {
     final amount = int.parse(amountController!.text);
     final charityId = widget.data['id'];
 
-    final userId = uid;
     final timestamp = DateTime.now().millisecondsSinceEpoch;
     final paymentId = uid.toString() +
         charityId.toString() +
@@ -130,7 +129,7 @@ class _SingleCharityState extends State<SingleCharity> {
 
   Future<String> createBill(String donationId) async {
     final response = await http.post(
-      Uri.parse('http://192.168.154.58'),
+      Uri.parse('https://g.smte.me'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -145,25 +144,6 @@ class _SingleCharityState extends State<SingleCharity> {
       throw Exception('Failed to create payment link.');
     }
   }
-
-  // void paymentSuccess() {
-  //   final auth = FirebaseAuth.instance;
-  //   final db = FirebaseFirestore.instance;
-  //   final amount = int.parse(amountController!.text);
-  //   final charityId = widget.data['id'];
-  //
-  //   db.collection('charities').doc(charityId).update({
-  //     'current': widget.data['current'] + amount,
-  //   }).then((value) {
-  //     setState(() {
-  //       buttonText = "Donate";
-  //     });
-  //     pushMessage("Thank you for your donation!");
-  //     push(context, const MyApp(currentIndex: 2));
-  //   }).catchError((error) {
-  //     pushMessage(error.toString());
-  //   });
-  // }
 
   @override
   Widget build(BuildContext context) {

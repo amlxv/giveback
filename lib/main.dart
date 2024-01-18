@@ -41,6 +41,7 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> initDynamicLinks() async {
     dynamicLinks.onLink.listen((dynamicLinkData) {
+      Navigator.pop(context);
       updateIndex(2);
     }).onError((error) {
       print(error.message);
