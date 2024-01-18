@@ -2,10 +2,12 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:giveback/main.dart';
 import 'package:giveback/utils/misc.dart';
 import 'package:giveback/utils/validation.dart';
 import 'package:shimmer/shimmer.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:url_launcher/url_launcher.dart';
 
 class SingleCharity extends StatefulWidget {
   final dynamic data;
@@ -18,6 +20,7 @@ class SingleCharity extends StatefulWidget {
 class _SingleCharityState extends State<SingleCharity> {
   String defaultImage = 'https://picsum.photos/seed';
   String buttonText = "Donate";
+  String paymentLink = "";
   TextEditingController? amountController = TextEditingController();
 
   @override
@@ -25,48 +28,142 @@ class _SingleCharityState extends State<SingleCharity> {
     super.initState();
   }
 
-  Future handleDonation() async {
+  handleButtonClick(BuildContext context) async {
+    FirebaseFirestore db = FirebaseFirestore.instance;
+    FirebaseAuth auth = FirebaseAuth.instance;
+
+    /** Get the user phone number. **/
+    var phoneNumber =
+        await db.collection('users').doc(auth.currentUser?.uid).get().then(
+      (DocumentSnapshot documentSnapshot) {
+        if (documentSnapshot.data() == null) return;
+        final userRef = documentSnapshot.data() as Map<String, dynamic>;
+        if (userRef["phone"] == null) return;
+        return userRef["phone"];
+      },
+      onError: (Object? error) => pushMessage(error.toString()),
+    );
+
+    /** Verify the user has a phone number. Requirement from payment gateway. **/
+    if (phoneNumber == null) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+              "Please provide your phone number in the profile section to start donating."),
+        ),
+      );
+      return;
+    }
+
+    /** Dynamically change the button behaviour **/
+    if (buttonText == "Donate") {
+      setState(() {
+        buttonText = "Confirm";
+      });
+    } else if (buttonText == "Confirm") {
+      validateInput("Amount", amountController!);
+
+      if (amountController!.text.isNotEmpty) {
+        if (!context.mounted) return;
+        await handleDonation(context);
+
+        setState(() {
+          buttonText = "Pay";
+        });
+      }
+    } else if (buttonText == "Pay") {
+      /** Redirect the user to the payment page **/
+      final Uri url = Uri.parse(paymentLink);
+
+      if (!await launchUrl(url)) {
+        throw Exception('Could not launch $url');
+      }
+    }
+  }
+
+  Future handleDonation(BuildContext context) async {
     final auth = FirebaseAuth.instance;
     final db = FirebaseFirestore.instance;
     final uid = auth.currentUser!.uid;
     final amount = int.parse(amountController!.text);
     final charityId = widget.data['id'];
 
-    await db.collection('donations').add({
-      'amount': amount,
-      'charity_id': charityId,
-      'user_id': uid,
-      'timestamp': DateTime.now().millisecondsSinceEpoch,
-    }).then((value) {
-      db.collection('charities').doc(charityId).update({
-        'current': widget.data['current'] + amount,
-      }).then((value) {
-        setState(() {
-          buttonText = "Donate";
-        });
-        pushMessage("Thank you for your donation!");
-        push(context, const MyApp(currentIndex: 2));
-      }).catchError((error) {
-        pushMessage(error.toString());
-      });
-    }).catchError((error) {
-      pushMessage(error.toString());
-    });
-  }
+    final userId = uid;
+    final timestamp = DateTime.now().millisecondsSinceEpoch;
+    final paymentId = uid.toString() +
+        charityId.toString() +
+        amount.toString() +
+        DateTime.now().millisecondsSinceEpoch.toString();
 
-  handleButtonClick() async {
-    if (buttonText == "Donate") {
-      setState(() {
-        buttonText = "Pay";
+    try {
+      final result = await db.collection('donations').add({
+        'email': FirebaseAuth.instance.currentUser?.email,
+        'amount': amount,
+        'charity_id': charityId,
+        'user_id': uid,
+        'timestamp': timestamp,
+        'payment_id': paymentId,
+        'is_paid': false
       });
-    } else {
-      validateInput("Amount", amountController!);
 
-      if (amountController!.text.isNotEmpty) {
-        await handleDonation();
+      if (!context.mounted) return;
+      final paymentLinkResult = await getBillLink(context, result.id);
+
+      if (paymentLinkResult is String) {
+        paymentLink = paymentLinkResult;
       }
+    } on Exception catch (error) {
+      pushMessage(error.toString());
     }
   }
+
+  getBillLink(BuildContext context, donationId) async {
+    try {
+      return await createBill(donationId);
+    } on Exception catch (error) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(error.toString().substring(11))));
+    }
+  }
+
+  Future<String> createBill(String donationId) async {
+    final response = await http.post(
+      Uri.parse('http://192.168.154.58'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'donation_id': donationId,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      return response.body;
+    } else {
+      throw Exception('Failed to create payment link.');
+    }
+  }
+
+  // void paymentSuccess() {
+  //   final auth = FirebaseAuth.instance;
+  //   final db = FirebaseFirestore.instance;
+  //   final amount = int.parse(amountController!.text);
+  //   final charityId = widget.data['id'];
+  //
+  //   db.collection('charities').doc(charityId).update({
+  //     'current': widget.data['current'] + amount,
+  //   }).then((value) {
+  //     setState(() {
+  //       buttonText = "Donate";
+  //     });
+  //     pushMessage("Thank you for your donation!");
+  //     push(context, const MyApp(currentIndex: 2));
+  //   }).catchError((error) {
+  //     pushMessage(error.toString());
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -255,7 +352,7 @@ class _SingleCharityState extends State<SingleCharity> {
           borderRadius: BorderRadius.circular(20),
           child: SubmitButton(
             labelText: buttonText,
-            onPressed: handleButtonClick,
+            onPressed: () => handleButtonClick(context),
             height: 70,
           ),
         ),

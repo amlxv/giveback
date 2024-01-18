@@ -6,6 +6,7 @@ import 'package:giveback/pages/auth/login.dart';
 import 'package:giveback/utils/menu.dart';
 import 'package:giveback/utils/navbar.dart';
 import 'package:giveback/utils/theme.dart';
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 
 final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
     GlobalKey<ScaffoldMessengerState>();
@@ -36,9 +37,20 @@ class _MyAppState extends State<MyApp> {
   int index = 0;
   bool logged = false;
 
+  FirebaseDynamicLinks dynamicLinks = FirebaseDynamicLinks.instance;
+
+  Future<void> initDynamicLinks() async {
+    dynamicLinks.onLink.listen((dynamicLinkData) {
+      updateIndex(2);
+    }).onError((error) {
+      print(error.message);
+    });
+  }
+
   @override
   void initState() {
     super.initState();
+    initDynamicLinks();
     if (widget.currentIndex != null) {
       setState(() => index = widget.currentIndex!);
     }
