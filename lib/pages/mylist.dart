@@ -20,6 +20,7 @@ class _MyListState extends State<MyList> {
     await db
         .collection('donations')
         .where('user_id', isEqualTo: auth.currentUser?.uid)
+        .where('is_paid', isEqualTo: true)
         .get()
         .then((QuerySnapshot snapshot) {
       for (var doc in snapshot.docs) {

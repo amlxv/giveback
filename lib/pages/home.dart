@@ -152,6 +152,8 @@ class _HomeState extends State<Home> {
                                     .collection('donations')
                                     .where('user_id',
                                         isEqualTo: auth.currentUser?.uid)
+                                    .where('is_paid',
+                                        isEqualTo: true)
                                     .snapshots(),
                                 builder: (context, snapshot) {
                                   if (snapshot.hasData) {
